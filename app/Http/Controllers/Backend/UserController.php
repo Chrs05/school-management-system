@@ -14,13 +14,14 @@ class UserController extends Controller
         // $allUsers = User::all();
         // return view('backend.user.view_user', compact('allUsers'));
         //OR
-        $data['allUsers'] = User::all();
+        // $data['allUsers'] = User::all();
+        $data['allUsers'] = User::where('usertype', 'Admin')->get();
         return view('backend.user.view_user', $data);
     }
 
     public function AddUser() {
         return view('backend.user.add_user');
-    }  
+    }
 
     public function StoreUser(Request $request) {
 
@@ -30,10 +31,17 @@ class UserController extends Controller
         ]);
 
         $data = new User();
-        $data->usertype = $request->usertype;
+        $code = rand(0000,9999);
+
+
+        // $data->usertype = $request->usertype;
+        $data->usertype = 'Admin';
+        $data->role     = $request->role;
         $data->name     = $request->name;
         $data->email    = $request->email;
-        $data->password = bcrypt($request->password);
+        $data->code     = $code;
+        // $data->password = bcrypt($request->password);
+        $data->password = bcrypt($code);
         $data->save();
 
         $notification = array(
@@ -44,40 +52,40 @@ class UserController extends Controller
         return Redirect()->route('user.view')->with($notification);
     }
 
-    public function EditUser($id) { 
+    public function EditUser($id) {
         $editData = User::find($id);
         return view('backend.user.edit_user', compact('editData'));
-
     }
 
-    public function UpdateUser(Request $request, $id) 
-    { 
-        
+    public function UpdateUser(Request $request, $id)
+    {
+
         $data = User::find($id);
-        $data->usertype = $request->usertype;
+        // $data->usertype = $request->usertype;
         $data->name     = $request->name;
         $data->email    = $request->email;
+        $data->role    = $request->role;
         $data->save();
-        
+
         $notification = array(
             'message'    => 'User Updated Successfully',
             'alert-type' => 'info'
         );
-        
+
         return Redirect()->route('user.view')->with($notification);
-        
+
     }
-    
+
     public function DeleteUser($id) {
-          
+
         $data = User::find($id);
         $data->delete();
-        
+
         $notification = array(
             'message'    => 'User Deleted Successfully',
             'alert-type' => 'warning'
         );
-        
+
         return Redirect()->route('user.view')->with($notification);
     }
 }

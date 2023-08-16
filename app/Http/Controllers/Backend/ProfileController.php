@@ -23,10 +23,10 @@ class ProfileController extends Controller {
         $editData = User::find($id);
 
         return view('backend.user.edit_profile', compact('editData'));
-
     }
 
     public function ProfileStore(Request $request) {
+
         $data = User::find(Auth::user()->id);
         $data->name = $request->name;
         $data->email = $request->email;
@@ -47,13 +47,13 @@ class ProfileController extends Controller {
             'message'    => 'User Profile Updated Successfully',
             'alert-type' => 'success'
         );
-        
+
         return Redirect()->route('profile.view')->with($notification);
     }
 
     public function PasswordView() {
         return view('backend.user.edit_password');
-    }   
+    }
 
     public function PasswordUpdate(Request $request) {
 
@@ -72,6 +72,6 @@ class ProfileController extends Controller {
         } else {
             return redirect()->back();
         }
-       
+
     }
 }
